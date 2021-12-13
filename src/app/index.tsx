@@ -5,7 +5,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { GlobalStyle } from 'styles/global-styles';
 
 import { HomePage } from './pages/home-page/Loadable';
-import { NotFoundPage } from './components/NotFoundPage/Loadable';
+import { NotFoundPage } from './components/not-found-page/Loadable';
 import { useTranslation } from 'react-i18next';
 import { DefaultLayout } from './layouts/default-layout';
 import { ProductDetailPage } from './pages/product-detail-page/Loadable';

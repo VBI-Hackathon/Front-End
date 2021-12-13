@@ -15,7 +15,7 @@ export function DefaultLayout() {
   return (
     <Layout>
       <ContainerStyled maxWidth="sm">
-        <TopAppBar/>
+        <TopAppBar />
         <Box sx={{ bgcolor: 'white', minHeight: '100vh' }}>
           <Outlet />
         </Box>
