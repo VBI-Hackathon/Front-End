@@ -29,7 +29,7 @@ export function BottomAppBar() {
       >
         <BottomNavigation
           showLabels
-          sx={{ background: '#f15223' }}
+          sx={{ background: 'var(--main-color)' }}
           value={value}
           onChange={(event, newValue) => {
             setValue(newValue);

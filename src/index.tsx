@@ -11,6 +11,7 @@ import 'react-app-polyfill/stable';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import { createTheme } from '@mui/material/styles';
 
 // Use consistent styling
 import 'sanitize.css/sanitize.css';
@@ -26,15 +27,29 @@ import reportWebVitals from 'reportWebVitals';
 
 // Initialize languages
 import './locales/i18n';
+import { ThemeProvider } from '@emotion/react';
 
 const store = configureAppStore();
 const MOUNT_NODE = document.getElementById('root') as HTMLElement;
+
+let theme = createTheme({
+  palette: {
+    primary: {
+      main: '#f15223',
+    },
+    // secondary: {
+    //   main: '#f15223',
+    // },
+  },
+});
 
 ReactDOM.render(
   <Provider store={store}>
     <HelmetProvider>
       <React.StrictMode>
-        <App />
+        <ThemeProvider theme={theme}>
+          <App />
+        </ThemeProvider>
       </React.StrictMode>
     </HelmetProvider>
   </Provider>,

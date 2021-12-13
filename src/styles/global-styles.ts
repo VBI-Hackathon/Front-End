@@ -7,6 +7,12 @@ export const GlobalStyle = createGlobalStyle`
     width: 100%;
   }
 
+  :root {
+    --main-color: #f15223;
+  }
+
+
+
   body {
     /* font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; */
   }
