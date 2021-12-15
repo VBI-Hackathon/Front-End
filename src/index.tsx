@@ -28,6 +28,7 @@ import reportWebVitals from 'reportWebVitals';
 // Initialize languages
 import './locales/i18n';
 import { ThemeProvider } from '@emotion/react';
+import { SubstrateContextProvider } from 'libs/substrate/substrate.context';
 
 const store = configureAppStore();
 const MOUNT_NODE = document.getElementById('root') as HTMLElement;
@@ -45,13 +46,15 @@ let theme = createTheme({
 
 ReactDOM.render(
   <Provider store={store}>
-    <HelmetProvider>
-      <React.StrictMode>
-        <ThemeProvider theme={theme}>
-          <App />
-        </ThemeProvider>
-      </React.StrictMode>
-    </HelmetProvider>
+    <SubstrateContextProvider>
+      <HelmetProvider>
+        <React.StrictMode>
+          <ThemeProvider theme={theme}>
+            <App />
+          </ThemeProvider>
+        </React.StrictMode>
+      </HelmetProvider>
+    </SubstrateContextProvider>
   </Provider>,
   MOUNT_NODE,
 );

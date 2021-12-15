@@ -116,12 +116,12 @@ export const TopAppBar = () => {
             {pages.map((page: IPage) => (
               <Link to={page.path}>
                 <Button
-                key={page.key}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page.name}
-              </Button>
+                  key={page.key}
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: 'white', display: 'block' }}
+                >
+                  {page.name}
+                </Button>
               </Link>
             ))}
           </Box>
