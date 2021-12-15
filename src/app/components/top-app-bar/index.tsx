@@ -11,8 +11,25 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+import { Link } from 'react-router-dom';
 
-const pages = ['Products', 'Pricing', 'Blog'];
+const pages = [
+  {
+    key: 1,
+    name: 'Farmer',
+    path: process.env.PUBLIC_URL + '/farmer',
+  },
+  {
+    key: 2,
+    name: 'Retailer',
+    path: process.env.PUBLIC_URL + '/retailer',
+  },
+];
+interface IPage {
+  key: number;
+  name: string;
+  path: string;
+}
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 export const TopAppBar = () => {
@@ -80,9 +97,9 @@ export const TopAppBar = () => {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map(page => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+              {pages.map((page: IPage) => (
+                <MenuItem key={page.key} onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">{page.name}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -96,14 +113,16 @@ export const TopAppBar = () => {
             LOGO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map(page => (
-              <Button
-                key={page}
+            {pages.map((page: IPage) => (
+              <Link to={page.path}>
+                <Button
+                key={page.key}
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
-                {page}
+                {page.name}
               </Button>
+              </Link>
             ))}
           </Box>
 

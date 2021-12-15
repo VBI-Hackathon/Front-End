@@ -9,6 +9,7 @@ import { NotFoundPage } from './components/not-found-page/Loadable';
 import { useTranslation } from 'react-i18next';
 import { DefaultLayout } from './layouts/default-layout';
 import { ProductDetailPage } from './pages/product-detail-page/Loadable';
+import { FarmerPage } from './pages/farmer-page/Loadable';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -28,6 +29,10 @@ export function App() {
           <Route
             path={process.env.PUBLIC_URL + '/product/:id'}
             element={<ProductDetailPage />}
+          />
+          <Route
+            path={process.env.PUBLIC_URL + '/farmer'}
+            element={<FarmerPage />}
           />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
