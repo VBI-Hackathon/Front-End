@@ -21,8 +21,8 @@ const pages = [
   },
   {
     key: 2,
-    name: 'Retailer',
-    path: process.env.PUBLIC_URL + '/retailer',
+    name: 'Agency',
+    path: process.env.PUBLIC_URL + '/agency',
   },
 ];
 interface IPage {
