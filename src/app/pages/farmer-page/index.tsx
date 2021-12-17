@@ -7,6 +7,8 @@ import { useSubstrate } from 'libs/substrate/substrate.context';
 import { SubtrateService } from 'libs/utils/service';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import QRCode from 'react-qr-code';
+import { Link } from 'react-router-dom';
 
 const orderingSchema = Yup.object().shape({
   name: Yup.string().required('Required'),
@@ -16,6 +18,7 @@ const orderingSchema = Yup.object().shape({
 export function FarmerPage() {
   const { refreshInfo, api, accountSelected } = useSubstrate();
   const navigate = useNavigate();
+  const [hash, setHash] = useState<string>('');
   const formik = useFormik({
     initialValues: {
       name: '',
@@ -27,7 +30,10 @@ export function FarmerPage() {
       const svc = SubtrateService(api, accountSelected);
 
       svc.createAbility(values.name, values.quantity, values.note).then(res => {
-        console.log('create abit', res.toString());
+        console.log('create abit');
+        setHash(
+          (process.env.PUBLIC_URL as string) + `/product/${res.toString()}`,
+        );
         toast.success('Tạo sản phẩm thành công', {
           position: 'top-right',
           autoClose: 5000,
@@ -101,6 +107,20 @@ export function FarmerPage() {
           Tạo đơn hàng
         </Button>
       </Box>
+      {!!hash && (
+        <Box
+          mt="20px"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          flexDirection="column"
+        >
+          <QRCode value="hey" />
+          <Box mt="20px">
+            <Link to={hash}> Xem đơn hàng</Link>
+          </Box>
+        </Box>
+      )}
     </Box>
   );
 }
