@@ -1,12 +1,8 @@
 import {
-  Avatar,
   Box,
-  FormControl,
   IconButton,
   Menu,
   MenuItem,
-  Select,
-  SelectChangeEvent,
   Tooltip,
   Typography,
 } from '@mui/material';
@@ -38,12 +34,6 @@ export function AccountSelector(props) {
     dispatch({ type: SubstrateAction.CHANGE_ACCOUNT, payload: initialAddress });
   }, [accountSelected, keyringOptions, dispatch]);
 
-  const handleChange = (event: SelectChangeEvent) => {
-    const addr = event.target.value as string;
-    if (addr === accountSelected) return;
-    dispatch({ type: SubstrateAction.CHANGE_ACCOUNT, payload: addr });
-  };
-
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -58,10 +48,22 @@ export function AccountSelector(props) {
     setAnchorElUser(null);
   };
 
+  if (!accountSelected) return null;
+
   return (
     <Box sx={{ flexGrow: 0 }}>
       <Tooltip title="Change account">
         <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+          <Box
+            border="2px solid #e2e1e1"
+            borderRadius={2}
+            padding="4px 10px"
+            fontSize={13}
+            color="#e2e1e1"
+            marginRight={1}
+          >
+            <BalanceAnnotation accountSelected={accountSelected} />
+          </Box>
           <Box
             border="2px solid #fff"
             borderRadius={8}
@@ -101,48 +103,33 @@ export function AccountSelector(props) {
       </Menu>
     </Box>
   );
-
-  //   return (
-  //     <FormControl fullWidth color="success">
-  //       <Select value={accountSelected} onChange={handleChange}>
-  //         {keyringOptions.map(account => (
-  //           <MenuItem value={account.address}>{account.label}</MenuItem>
-  //         ))}
-  //       </Select>
-  //     </FormControl>
-  //   );
 }
 
-// function BalanceAnnotation(props) {
-//   const { accountSelected } = props;
-//   const { api } = useSubstrate();
-//   const [accountBalance, setAccountBalance] = useState(0);
+function BalanceAnnotation(props) {
+  const { accountSelected } = props;
+  const { api } = useSubstrate();
+  const [accountBalance, setAccountBalance] = useState(0);
 
-//   // When account address changes, update subscriptions
-//   useEffect(() => {
-//     let unsubscribe;
+  // When account address changes, update subscriptions
+  useEffect(() => {
+    let unsubscribe;
 
-//     // If the user has selected an address, create a new subscription
-//     accountSelected &&
-//       api.query.system
-//         .account(accountSelected, balance => {
-//           setAccountBalance(balance.data.free.toHuman());
-//         })
-//         .then(unsub => {
-//           unsubscribe = unsub;
-//         })
-//         .catch(console.error);
+    // If the user has selected an address, create a new subscription
+    accountSelected &&
+      api.query.system
+        .account(accountSelected, balance => {
+          setAccountBalance(balance.data.free.toHuman());
+        })
+        .then(unsub => {
+          unsubscribe = unsub;
+        })
+        .catch(console.error);
 
-//     return () => unsubscribe && unsubscribe();
-//   }, [api, accountSelected]);
+    return () => unsubscribe && unsubscribe();
+  }, [api, accountSelected]);
 
-//   return accountSelected ? (
-//     <Label pointing="left">
-//       <Icon name="money" color="green" />
-//       {accountBalance}
-//     </Label>
-//   ) : null;
-// }
+  return accountSelected ? <Box>${accountBalance}</Box> : null;
+}
 
 // export default function AccountSelector(props) {
 //   const { api, keyring } = useSubstrate();

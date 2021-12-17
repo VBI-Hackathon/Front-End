@@ -24,6 +24,7 @@ export interface SubstrateState {
   apiState: string;
   accountSelected: string;
   dispatch: Dispatch<SubstrateActions>;
+  connect: () => void;
 }
 
 export interface SubstrateActions {

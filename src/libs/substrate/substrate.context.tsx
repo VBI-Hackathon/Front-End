@@ -64,9 +64,14 @@ export const SubstrateContextProvider = props => {
   });
 
   const [state, dispatch] = useReducer(reducer, initState);
-  connectSubstrate(state, dispatch);
-  loadAccounts(state, dispatch);
-  Object.assign(state, { dispatch });
+
+  const connect = () => {
+    connectSubstrate(state, dispatch);
+    loadAccounts(state, dispatch);
+  };
+
+  connect();
+  Object.assign(state, { dispatch, connect });
 
   return (
     <SubstrateContext.Provider value={state}>

@@ -10,7 +10,7 @@ import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 export function HomePage() {
   const dispath = useDispatch();
   const isBottomNav = useSelector(selectBottomNav);
-  const { api, keyring } = useSubstrate();
+  const { api, keyring, connect } = useSubstrate();
   console.log(keyring?.getPairs());
   // const [accountSelected, setAccountSelected] = useState('');
 
@@ -56,7 +56,7 @@ export function HomePage() {
         <meta name="description" content="Truy xuất nguồn gốc thực phẩm" />
       </Helmet>
       <Box>
-        <Button
+        {/* <Button
           variant="outlined"
           onClick={async () => {
             api.query.timestamp.now().then(res => {
@@ -76,8 +76,8 @@ export function HomePage() {
           }}
         >
           Test
-        </Button>
-        <span>HomePage Truy xuất nguồn gốc thực phẩm</span>
+        </Button> */}
+        <span>Truy xuất nguồn gốc thực phẩm</span>
         {!isBottomNav && (
           <Box mt="20px" display="flex" justifyContent="center">
             <Button

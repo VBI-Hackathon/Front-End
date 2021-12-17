@@ -11,7 +11,7 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { AccountSelector } from '../account-selector/AccountSelector';
 
 const pages = [
@@ -60,15 +60,26 @@ export const TopAppBar = () => {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
+          <Link
+            to="/"
+            style={{
+              textDecoration: 'unset',
+              color: 'white',
+            }}
           >
-            TraceVix
-          </Typography>
-
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
+            >
+              TraceVix
+            </Typography>
+          </Link>
+          <Box display="flex" justifyContent="flex-end" flex={1}>
+            <AccountSelector />
+          </Box>
+          {/* 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -125,8 +136,7 @@ export const TopAppBar = () => {
                 </Button>
               </Link>
             ))}
-          </Box>
-          <AccountSelector />
+          </Box> */}
 
           {/* <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
