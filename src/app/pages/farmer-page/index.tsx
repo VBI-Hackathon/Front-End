@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Box, FormControl, TextField, Button, Input } from '@mui/material';
 import * as Yup from 'yup';
@@ -18,7 +18,13 @@ const orderingSchema = Yup.object().shape({
 export function FarmerPage() {
   const { refreshInfo, api, accountSelected } = useSubstrate();
   const navigate = useNavigate();
-  const [hash, setHash] = useState<string>('');
+  const [hash, setHash] = useState('');
+
+  const orderingLink = useMemo(() => {
+    if (!hash) return '';
+    return window.location.origin + `/product/${hash}`;
+  }, [hash]);
+
   const formik = useFormik({
     initialValues: {
       name: '',
@@ -29,26 +35,26 @@ export function FarmerPage() {
     onSubmit: values => {
       const svc = SubtrateService(api, accountSelected);
 
-      svc.createAbility(values.name, values.quantity, values.note).then(res => {
-        console.log('create abit');
-        setHash(
-          (process.env.PUBLIC_URL as string) + `/product/${res.toString()}`,
-        );
-        toast.success('Tạo sản phẩm thành công', {
-          position: 'top-right',
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: 'colored',
-          onClose: () => {
-            // refreshInfo();
-            // navigate('/');
-          },
+      svc
+        .createAbility(values.name, values.quantity, values.note)
+        .then(hash => {
+          console.log('create abit');
+          setHash(hash.toString());
+          toast.success('Tạo sản phẩm thành công', {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'colored',
+            onClose: () => {
+              // refreshInfo();
+              // navigate('/');
+            },
+          });
         });
-      });
 
       // setTimeout(() => {
       //   refreshInfo();
@@ -107,7 +113,7 @@ export function FarmerPage() {
           Tạo đơn hàng
         </Button>
       </Box>
-      {!!hash && (
+      {!!orderingLink && (
         <Box
           mt="20px"
           display="flex"
@@ -115,7 +121,7 @@ export function FarmerPage() {
           alignItems="center"
           flexDirection="column"
         >
-          <QRCode value="hey" />
+          <QRCode value={orderingLink} />
           <Box mt="20px">
             <Link to={hash}> Xem đơn hàng</Link>
           </Box>
