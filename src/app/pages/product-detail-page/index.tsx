@@ -18,18 +18,18 @@ import { useParams } from 'react-router-dom';
 export function ProductDetailPage(xxx) {
   const params = useParams();
   const hashId = params.id;
-  const { api } = useSubstrate();
+  const { api, apiState } = useSubstrate();
   const [prodRouting, setProdRouting] = useState<ProductInfo[]>([]);
   const [prodInfo, setProdInfo] = useState<any>({});
   const [prodRoutingLoading, setProdRoutingLoading] = useState(true);
   const [prodInfoLoading, setProdInfoLoading] = useState(true);
 
   useEffect(() => {
-    if (!hashId) return;
+    if (!hashId || apiState !== 'READY') return;
     const fetchRouting = async () => {
       setProdRoutingLoading(true);
       try {
-        const prodRouting = await api.query[METHODS_RPC.traceAbility.key]?.[
+        const prodRouting = await api.query[METHODS_RPC.traceAbility.key][
           METHODS_RPC.traceAbility.methods.logInfosOwned
         ](hashId);
         if (!!prodRouting) {
@@ -44,7 +44,8 @@ export function ProductDetailPage(xxx) {
     const fetchInfo = async () => {
       setProdInfoLoading(true);
       try {
-        const prodInfo = await api.query[METHODS_RPC.traceAbility.key]?.[
+        console.log('xx', api.query);
+        const prodInfo = await api.query[METHODS_RPC.traceAbility.key][
           METHODS_RPC.traceAbility.methods.logInfos
         ](hashId);
         if (!!prodInfo) {
@@ -53,9 +54,11 @@ export function ProductDetailPage(xxx) {
       } catch (error) {}
       setProdInfoLoading(false);
     };
-    fetchInfo();
-    fetchRouting();
-  }, [hashId]);
+    setTimeout(() => {
+      fetchInfo();
+      fetchRouting();
+    }, 200);
+  }, [hashId, api, apiState]);
 
   const prodName = useMemo(() => {
     return hexToAscii(prodRouting?.[0]?.productName || prodInfo?.productName);
@@ -74,9 +77,6 @@ export function ProductDetailPage(xxx) {
   }, [prodRouting]);
 
   if (!hashId) return null;
-
-  console.log(prodInfo);
-  console.log(prodRouting);
 
   return (
     <>

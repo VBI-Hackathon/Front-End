@@ -24,11 +24,9 @@ export const connectSubstrate = async (
   if (state.apiState) return;
   const provider = new WsProvider(state.socket);
   const _api = new ApiPromise({ provider, rpc: state.jsonrpc });
-  console.log(state)
 
   // Set listeners for disconnection and reconnection event.
   _api.on('connected', () => {
-    console.log(_api);
     dispatch({ type: SubstrateAction.CONNECT, payload: _api });
     // `ready` event is not emitted upon reconnection and is checked explicitly here.
     _api.isReady.then(_api =>
