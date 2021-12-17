@@ -1,4 +1,4 @@
-import React, { useReducer, useContext } from 'react';
+import React, { useReducer, useContext, useEffect, useState } from 'react';
 import jsonrpc from '@polkadot/types/interfaces/jsonrpc';
 import { connectSubstrate, loadAccounts } from './substrate.utils';
 import { ApiPromise } from '@polkadot/api';
@@ -8,6 +8,7 @@ import {
   SubstrateActions,
   SubstrateState,
 } from './substrate.type';
+import { SubtrateService } from 'libs/utils/service';
 export { SubstrateAction } from './substrate.type';
 
 const INIT_STATE = {
@@ -19,6 +20,7 @@ const INIT_STATE = {
   apiError: null,
   apiState: null,
   accountSelected: '',
+  accountInfo: null,
 } as unknown as SubstrateState;
 
 const SubstrateContext = React.createContext<SubstrateState>(INIT_STATE);
@@ -49,12 +51,16 @@ const reducer = (state: SubstrateState, action: SubstrateActions) => {
     case SubstrateAction.CHANGE_ACCOUNT:
       return { ...state, accountSelected: action.payload };
 
+    case SubstrateAction.SET_ACCOUNT_INFO:
+      return { ...state, accountInfo: action.payload };
+
     default:
       throw new Error(`Unknown type: ${action.type}`);
   }
 };
 
 export const SubstrateContextProvider = props => {
+  const [loading, setLoading] = useState(true);
   // filtering props and merge with default param value
   const initState = { ...INIT_STATE };
   const neededPropNames = ['socket'];
@@ -72,6 +78,30 @@ export const SubstrateContextProvider = props => {
 
   connect();
   Object.assign(state, { dispatch, connect });
+
+  useEffect(() => {
+    if (!state.accountSelected || !state.api || state.apiState !== 'READY')
+      return;
+
+    const fetchInfo = async () => {
+      setLoading(true);
+      try {
+        const svc = SubtrateService(state.api, state.accountSelected);
+        const info = await svc.getMyInfo();
+        dispatch({
+          type: SubstrateAction.SET_ACCOUNT_INFO,
+          payload: info.toJSON(),
+        });
+      } catch (error) {
+        dispatch({
+          type: SubstrateAction.SET_ACCOUNT_INFO,
+          payload: null,
+        });
+      }
+      setLoading(false);
+    };
+    fetchInfo();
+  }, [state.accountSelected, state.api, state.apiState]);
 
   return (
     <SubstrateContext.Provider value={state}>

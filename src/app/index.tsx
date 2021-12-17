@@ -11,6 +11,7 @@ import { DefaultLayout } from './layouts/default-layout';
 import { ProductDetailPage } from './pages/product-detail-page/Loadable';
 import { FarmerPage } from './pages/farmer-page/Loadable';
 import { AgencyPage } from './pages/agency-page/Loadable';
+import { RegisterPage } from './pages/register-page/Loadable';
 
 // InfoPage
 export function App() {
@@ -39,6 +40,10 @@ export function App() {
           <Route
             path={process.env.PUBLIC_URL + '/agency'}
             element={<AgencyPage />}
+          />
+          <Route
+            path={process.env.PUBLIC_URL + '/register'}
+            element={<RegisterPage />}
           />
         </Route>
         <Route path="*" element={<NotFoundPage />} />

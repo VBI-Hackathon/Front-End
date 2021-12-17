@@ -6,48 +6,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectBottomNav } from 'app/stores/setting-store/selectors';
 import { useSubstrate } from 'libs/substrate/substrate.context';
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
+import { SubtrateService } from 'libs/utils/service';
+import { useNavigate } from 'react-router-dom';
 
 export function HomePage() {
   const dispath = useDispatch();
   const isBottomNav = useSelector(selectBottomNav);
-  const { api, keyring, connect, accountSelected } = useSubstrate();
-  console.log(keyring?.getPairs());
-  // const [accountSelected, setAccountSelected] = useState('');
-
-  // // Get the list of accounts we possess the private key for
-  // const keyringOptions = keyring.getPairs().map(account => ({
-  //   key: account.address,
-  //   value: account.address,
-  //   text: (account as any)?.meta?.name?.toUpperCase(),
-  //   icon: 'user',
-  // }));
-  // console.log('keyringOptions', keyringOptions);
-
-  // const initialAddress =
-  //   keyringOptions.length > 0 ? keyringOptions[0].value : '';
-
-  // console.log(
-  //   'initialAddress',
-  //   ,
-  // );
-  // console.log({ keyringOptions });
-  useEffect(() => {
-    const test = async () => {
-      // await web3Enable(process.env.REACT_APP_APP_NAME as string, xx => {
-      //   console.log('xx', xx);
-      // });
-      web3Accounts().then(res => console.log({ res }));
-    };
-    test();
-  }, []);
-
-  // const getFromAcct = async () => {
-  //   const injected = await web3FromSource(source);
-  //   fromAcct = address;
-  //   api.setSigner(injected.signer);
-
-  //   return fromAcct;
-  // };
+  const { api, keyring, connect, accountSelected, accountInfo } =
+    useSubstrate();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -56,47 +23,42 @@ export function HomePage() {
         <meta name="description" content="Truy xuất nguồn gốc thực phẩm" />
       </Helmet>
       <Box>
-        <Button
-          variant="outlined"
-          onClick={async () => {
-            api.query.timestamp.now().then(res => {
-              console.log('xx', res.toNumber());
-            });
-            api.tx['traceAbility']
-              ['registerUser']('user11', 'bmt')
-              .signAndSend(accountSelected)
-              .then(res => {
-                console.log('registerUser', res.toString());
-              });
-            const palletRpc = 'templateModule';
-            const callable = 'doSomething';
-            const transformed = [11111];
-            // api.tx[palletRpc][callable](transformed).signAndSend();
-          }}
-        >
-          Test
-        </Button>
-        <Button
-          variant="outlined"
-          onClick={async () => {
-            api.query.timestamp.now().then(res => {
-              console.log('xx', res.toNumber());
-            });
-            api.query['traceAbility']
-              ['userInfos'](accountSelected.address)
-              .then(res => {
-                console.log('userInfos', res.toString());
-              });
-            const palletRpc = 'templateModule';
-            const callable = 'doSomething';
-            const transformed = [11111];
-            // api.tx[palletRpc][callable](transformed).signAndSend();
-          }}
-        >
-          Test2
-        </Button>
-        <span>Truy xuất nguồn gốc thực phẩm</span>
-        {!isBottomNav && (
+        <Box mb="10px" p="20px 10px">
+          <span>Truy xuất nguồn gốc thực phẩm</span>
+          <Box>
+            Truy xuất nguồn gốc thực phẩm là gì? Với một định nghĩa ngắn gọn và
+            dễ hiểu, truy xuất nguồn gốc là giải pháp cho phép người tiêu dùng
+            trực tiếp dễ dàng thu thập thông tin ngược dòng từ sản phẩm cuối
+            cùng về nơi sản xuất ban đầu. Giúp người tiêu dùng nhận được thông
+            tin xác thực về sản phẩm qua từng công đoạn của quá trình sản xuất,
+            chế biến và phân phối.
+            <img
+              src="https://clv.vn/wp-content/uploads/2019/11/Truy-xuat-nguon-goc-thuc-pham.jpg"
+              style={{ maxWidth: '100%' }}
+              alt="truy xuat"
+            />
+            <br /> Xu hướng hiện nay là sử dụng công nghệ thông tin và các thiết
+            bị điện tử. Nhằm giúp cho việc cập nhật thông tin, quản lý dữ liệu
+            và truy xuất nguồn gốc sản phẩm được thuận lợi. Giải pháp này đặc
+            biệt được coi trọng trong an toàn thực phẩm. Tại nhiều nước phát
+            triển, truy xuất nguồn gốc là yếu tố quan trọng và bắt buộc đối với
+            nhiều loại sản phẩm. Trong đó được quan tâm nhất là vẫn là các mặt
+            hàng thực phẩm.
+          </Box>
+        </Box>
+        {!accountInfo && (
+          <Box mb="10px" display="flex" justifyContent="center">
+            <Button
+              variant="outlined"
+              onClick={async () => {
+                navigate('/register');
+              }}
+            >
+              Đăng kí tài khoản
+            </Button>
+          </Box>
+        )}
+        {/* {!isBottomNav && (
           <Box mt="20px" display="flex" justifyContent="center">
             <Button
               variant="outlined"
@@ -107,7 +69,7 @@ export function HomePage() {
               Login
             </Button>
           </Box>
-        )}
+        )} */}
       </Box>
     </>
   );

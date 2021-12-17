@@ -4,6 +4,7 @@ import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import RestoreIcon from '@mui/icons-material/Restore';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import PostAddIcon from '@mui/icons-material/PostAdd';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import Paper from '@mui/material/Paper';
 import styled from '@emotion/styled';
@@ -35,9 +36,11 @@ export function BottomAppBar() {
             setValue(newValue);
           }}
         >
-          <Action label="Recents" icon={<RestoreIcon htmlColor="white" />} />
-          <Action label="Favorites" icon={<FavoriteIcon htmlColor="white" />} />
-          <Action label="Archive" icon={<ArchiveIcon htmlColor="white" />} />
+          <Action
+            label="Tạo đơn hàng"
+            icon={<PostAddIcon htmlColor="white" />}
+          />
+          {/* <Action label="Archive" icon={<ArchiveIcon htmlColor="white" />} /> */}
         </BottomNavigation>
       </Paper>
     </Box>

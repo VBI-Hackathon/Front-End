@@ -7,10 +7,12 @@ import { useSettingSlice } from 'app/stores/setting-store';
 import { selectBottomNav } from 'app/stores/setting-store/selectors';
 import { useSelector } from 'react-redux';
 import { TopAppBar } from 'app/components/top-app-bar';
+import { useSubstrate } from 'libs/substrate/substrate.context';
 
 export function DefaultLayout() {
   const { actions } = useSettingSlice();
-  const isBottomNav = useSelector(selectBottomNav);
+  // const isBottomNav = useSelector(selectBottomNav);
+  const { accountInfo } = useSubstrate();
 
   return (
     <Layout>
@@ -19,7 +21,7 @@ export function DefaultLayout() {
         <Box sx={{ bgcolor: 'white', minHeight: '100vh' }}>
           <Outlet />
         </Box>
-        {isBottomNav && <BottomAppBar />}
+        {!!accountInfo && <BottomAppBar />}
       </ContainerStyled>
     </Layout>
   );
