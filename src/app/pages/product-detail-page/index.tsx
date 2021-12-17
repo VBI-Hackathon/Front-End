@@ -8,6 +8,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useSubstrate } from 'libs/substrate/substrate.context';
+import { hexToAscii } from 'libs/utils/common';
 import { METHODS_RPC } from 'libs/utils/constants';
 import { ProductInfo } from 'libs/utils/model';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -28,7 +29,7 @@ export function ProductDetailPage(xxx) {
     const fetchRouting = async () => {
       setProdRoutingLoading(true);
       try {
-        const prodRouting = await api.query[METHODS_RPC.traceAbility.key][
+        const prodRouting = await api.query[METHODS_RPC.traceAbility.key]?.[
           METHODS_RPC.traceAbility.methods.logInfosOwned
         ](hashId);
         if (!!prodRouting) {
@@ -43,33 +44,39 @@ export function ProductDetailPage(xxx) {
     const fetchInfo = async () => {
       setProdInfoLoading(true);
       try {
-        const prodInfo = await api.query[METHODS_RPC.traceAbility.key][
+        const prodInfo = await api.query[METHODS_RPC.traceAbility.key]?.[
           METHODS_RPC.traceAbility.methods.logInfos
         ](hashId);
         if (!!prodInfo) {
           setProdInfo(prodInfo.toJSON() as unknown as ProductInfo[]);
         }
-      } catch (error) {
-        alert('Lỗi hệ thống, Vui lòng refresh page');
-      }
+      } catch (error) {}
       setProdInfoLoading(false);
     };
     fetchInfo();
     fetchRouting();
   }, [hashId]);
 
+  const prodName = useMemo(() => {
+    return hexToAscii(prodRouting?.[0]?.productName || prodInfo?.productName);
+  }, [prodRouting, prodInfo]);
+
   const routing = useMemo(() => {
     return prodRouting.map(p => {
       return {
         ...p,
-        label: `địa điểm ${p.address}`,
-        description: `${p.userName} đã quét vào thời gian ${p.datetime} bằng tài khoản ${p.owner}`,
+        label: `địa điểm ${hexToAscii(p.address)}`,
+        description: `${hexToAscii(p.userName)} đã quét vào thời gian ${
+          p.datetime
+        } bằng tài khoản ${p.owner}`,
       };
     });
   }, [prodRouting]);
 
   if (!hashId) return null;
-  const activeStep = 1;
+
+  console.log(prodInfo);
+  console.log(prodRouting);
 
   return (
     <>
@@ -81,7 +88,8 @@ export function ProductDetailPage(xxx) {
         {!prodRoutingLoading ? (
           <Box marginBottom="20px">
             <Box>
-              <b>Sản phẩm:</b> {prodInfo?.productName}
+              <b>Sản phẩm:</b>
+              {' ' + prodName}
             </Box>
             <Box>
               <b>Chủ sở hữu:</b> {prodInfo?.owner}
