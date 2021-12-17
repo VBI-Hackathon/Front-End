@@ -8,6 +8,7 @@ import {
   SubstrateActions,
   SubstrateState,
 } from './substrate.type';
+export { SubstrateAction } from './substrate.type';
 
 const INIT_STATE = {
   socket: process.env.REACT_APP_SUBSTRATE_PROVIDER_SOCKET,
@@ -17,6 +18,7 @@ const INIT_STATE = {
   api: null as unknown as ApiPromise,
   apiError: null,
   apiState: null,
+  accountSelected: '',
 } as unknown as SubstrateState;
 
 const SubstrateContext = React.createContext<SubstrateState>(INIT_STATE);
@@ -44,6 +46,9 @@ const reducer = (state: SubstrateState, action: SubstrateActions) => {
     case SubstrateAction.KEYRING_ERROR:
       return { ...state, keyring: null, keyringState: 'ERROR' };
 
+    case SubstrateAction.CHANGE_ACCOUNT:
+      return { ...state, accountSelected: action.payload };
+
     default:
       throw new Error(`Unknown type: ${action.type}`);
   }
@@ -61,6 +66,7 @@ export const SubstrateContextProvider = props => {
   const [state, dispatch] = useReducer(reducer, initState);
   connectSubstrate(state, dispatch);
   loadAccounts(state, dispatch);
+  Object.assign(state, { dispatch });
 
   return (
     <SubstrateContext.Provider value={state}>

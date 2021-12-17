@@ -6,3 +6,11 @@ export function hexToAscii(str1 = '') {
   }
   return str;
 }
+
+export function formatAddress(address: string) {
+  if (!address) return '';
+  console.log({ address });
+  const first4Digits = address.slice(0, 4);
+  const last4Digits = address.slice(-4);
+  return first4Digits.concat('....', last4Digits);
+}

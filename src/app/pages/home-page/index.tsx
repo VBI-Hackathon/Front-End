@@ -1,16 +1,45 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import { Box, Button } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
 import { settingActions, useSettingSlice } from 'app/stores/setting-store';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectBottomNav } from 'app/stores/setting-store/selectors';
 import { useSubstrate } from 'libs/substrate/substrate.context';
-import { web3FromSource } from '@polkadot/extension-dapp';
+import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 
 export function HomePage() {
   const dispath = useDispatch();
   const isBottomNav = useSelector(selectBottomNav);
-  const { api } = useSubstrate();
+  const { api, keyring } = useSubstrate();
+  console.log(keyring?.getPairs());
+  // const [accountSelected, setAccountSelected] = useState('');
+
+  // // Get the list of accounts we possess the private key for
+  // const keyringOptions = keyring.getPairs().map(account => ({
+  //   key: account.address,
+  //   value: account.address,
+  //   text: (account as any)?.meta?.name?.toUpperCase(),
+  //   icon: 'user',
+  // }));
+  // console.log('keyringOptions', keyringOptions);
+
+  // const initialAddress =
+  //   keyringOptions.length > 0 ? keyringOptions[0].value : '';
+
+  // console.log(
+  //   'initialAddress',
+  //   ,
+  // );
+  // console.log({ keyringOptions });
+  useEffect(() => {
+    const test = async () => {
+      // await web3Enable(process.env.REACT_APP_APP_NAME as string, xx => {
+      //   console.log('xx', xx);
+      // });
+      web3Accounts().then(res => console.log({ res }));
+    };
+    test();
+  }, []);
 
   // const getFromAcct = async () => {
   //   const injected = await web3FromSource(source);

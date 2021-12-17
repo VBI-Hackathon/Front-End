@@ -6,3 +6,8 @@ export interface ProductInfo {
   productName: string;
   datetime: number;
 }
+
+export interface IAccount {
+  address: string;
+  label: string;
+}
