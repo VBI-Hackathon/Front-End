@@ -10,7 +10,7 @@ import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 export function HomePage() {
   const dispath = useDispatch();
   const isBottomNav = useSelector(selectBottomNav);
-  const { api, keyring, connect } = useSubstrate();
+  const { api, keyring, connect, accountSelected } = useSubstrate();
   console.log(keyring?.getPairs());
   // const [accountSelected, setAccountSelected] = useState('');
 
@@ -56,18 +56,17 @@ export function HomePage() {
         <meta name="description" content="Truy xuất nguồn gốc thực phẩm" />
       </Helmet>
       <Box>
-        {/* <Button
+        <Button
           variant="outlined"
           onClick={async () => {
             api.query.timestamp.now().then(res => {
               console.log('xx', res.toNumber());
             });
-            api.query['traceAbility']
-              .logInfosOwned(
-                '0x57c85425412a4639aa0216ccb3d39922b6cb38dd5c6da4e3aabec13d5becaead',
-              )
+            api.tx['traceAbility']
+              ['registerUser']('user11', 'bmt')
+              .signAndSend(accountSelected)
               .then(res => {
-                console.log('logInfosOwned', res.toJSON());
+                console.log('registerUser', res.toString());
               });
             const palletRpc = 'templateModule';
             const callable = 'doSomething';
@@ -76,7 +75,26 @@ export function HomePage() {
           }}
         >
           Test
-        </Button> */}
+        </Button>
+        <Button
+          variant="outlined"
+          onClick={async () => {
+            api.query.timestamp.now().then(res => {
+              console.log('xx', res.toNumber());
+            });
+            api.query['traceAbility']
+              ['userInfos'](accountSelected.address)
+              .then(res => {
+                console.log('userInfos', res.toString());
+              });
+            const palletRpc = 'templateModule';
+            const callable = 'doSomething';
+            const transformed = [11111];
+            // api.tx[palletRpc][callable](transformed).signAndSend();
+          }}
+        >
+          Test2
+        </Button>
         <span>Truy xuất nguồn gốc thực phẩm</span>
         {!isBottomNav && (
           <Box mt="20px" display="flex" justifyContent="center">
@@ -86,7 +104,7 @@ export function HomePage() {
                 dispath(settingActions.displayButtonNav());
               }}
             >
-              Connect Wallet
+              Login
             </Button>
           </Box>
         )}

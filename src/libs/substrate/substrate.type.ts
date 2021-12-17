@@ -1,6 +1,7 @@
 import { ApiPromise } from '@polkadot/api';
 import keyring from '@polkadot/ui-keyring';
 import { Dispatch } from 'react';
+import type { KeyringPair } from '@polkadot/keyring/types';
 
 export enum SubstrateAction {
   CONNECT_INIT = 'CONNECT_INIT',
@@ -22,7 +23,7 @@ export interface SubstrateState {
   api: ApiPromise;
   apiError: any;
   apiState: string;
-  accountSelected: string;
+  accountSelected: KeyringPair;
   dispatch: Dispatch<SubstrateActions>;
   connect: () => void;
 }

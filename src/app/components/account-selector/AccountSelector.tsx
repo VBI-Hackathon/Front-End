@@ -13,24 +13,24 @@ import {
 import { formatAddress } from 'libs/utils/common';
 import { IAccount } from 'libs/utils/model';
 import React, { useState, useEffect, useMemo } from 'react';
+import type { KeyringPair } from '@polkadot/keyring/types';
 
-export function AccountSelector(props) {
+export function AccountSelector() {
   const { keyring, dispatch, accountSelected, api } = useSubstrate();
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
   // Get the list of accounts we possess the private key for
-  const keyringOptions = useMemo<IAccount[]>(() => {
+  const keyringOptions = useMemo(() => {
     if (!keyring || !api.query) return [];
     return keyring.getPairs().map(account => ({
-      address: account.address,
+      ...account,
       label: (account as any).meta.name.toUpperCase(),
     }));
   }, [keyring, api]);
 
   useEffect(() => {
     if (!!accountSelected || !dispatch) return;
-    const initialAddress =
-      keyringOptions.length > 0 ? keyringOptions[0].address : '';
+    const initialAddress = keyringOptions.length > 0 ? keyringOptions[0] : '';
     dispatch({ type: SubstrateAction.CHANGE_ACCOUNT, payload: initialAddress });
   }, [accountSelected, keyringOptions, dispatch]);
 
@@ -38,13 +38,9 @@ export function AccountSelector(props) {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleCloseUserMenu = (event, addr) => {
-    if (!!event) {
-      setAnchorElUser(null);
-      return;
-    }
-    if (addr === accountSelected) return;
-    dispatch({ type: SubstrateAction.CHANGE_ACCOUNT, payload: addr });
+  const handleCloseUserMenu = (acc: KeyringPair) => {
+    if (acc === accountSelected) return;
+    dispatch({ type: SubstrateAction.CHANGE_ACCOUNT, payload: acc! });
     setAnchorElUser(null);
   };
 
@@ -62,7 +58,7 @@ export function AccountSelector(props) {
             color="#e2e1e1"
             marginRight={1}
           >
-            <BalanceAnnotation accountSelected={accountSelected} />
+            <BalanceAnnotation accountSelected={accountSelected.address} />
           </Box>
           <Box
             border="2px solid #fff"
@@ -71,7 +67,7 @@ export function AccountSelector(props) {
             fontSize={14}
             color="#fff"
           >
-            {formatAddress(accountSelected || '')}
+            {formatAddress(accountSelected?.address || '')}
             <span style={{ marginLeft: '2px' }}>▼</span>
           </Box>
         </IconButton>
@@ -90,13 +86,12 @@ export function AccountSelector(props) {
           horizontal: 'right',
         }}
         open={Boolean(anchorElUser)}
-        onClose={handleCloseUserMenu}
+        onClose={() => {
+          setAnchorElUser(null);
+        }}
       >
         {keyringOptions.map((account, idx) => (
-          <MenuItem
-            key={idx}
-            onClick={() => handleCloseUserMenu(null, account.address)}
-          >
+          <MenuItem key={idx} onClick={() => handleCloseUserMenu(account)}>
             <Typography textAlign="center">{account.label}</Typography>
           </MenuItem>
         ))}

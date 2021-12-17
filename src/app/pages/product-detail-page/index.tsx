@@ -1,3 +1,4 @@
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Button,
@@ -9,11 +10,11 @@ import {
 } from '@mui/material';
 import { useSubstrate } from 'libs/substrate/substrate.context';
 import { hexToAscii } from 'libs/utils/common';
-import { METHODS_RPC } from 'libs/utils/constants';
 import { ProductInfo } from 'libs/utils/model';
-import React, { useEffect, useMemo, useState } from 'react';
+import { SubtrateService } from 'libs/utils/service';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
+import dayjs from 'dayjs';
 
 export function ProductDetailPage(xxx) {
   const params = useParams();
@@ -27,9 +28,9 @@ export function ProductDetailPage(xxx) {
     const fetchRouting = async () => {
       setProdRoutingLoading(true);
       try {
-        const prodRouting = await api.query[METHODS_RPC.traceAbility.key][
-          METHODS_RPC.traceAbility.methods.logInfosOwned
-        ](hashId);
+        const svc = SubtrateService(api);
+        const prodRouting = await svc.logInfosOwned(hashId);
+        console.log({ prodRouting });
         if (!!prodRouting) {
           setProdRouting(prodRouting.toJSON() as unknown as ProductInfo[]);
         }
@@ -44,21 +45,23 @@ export function ProductDetailPage(xxx) {
     }, 200);
   }, [hashId, api, apiState]);
 
-  const prodInfo = useMemo(() => {
-    return prodRouting[0] || {};
-  }, [prodRouting]);
-
   const routing = useMemo(() => {
     return prodRouting.map(p => {
+      const time = dayjs(p.datetime * 1000).format('HH:mm:ss DD/MM/YYYY');
       return {
         ...p,
         label: `địa điểm ${hexToAscii(p.address)}`,
-        description: `${hexToAscii(p.userName)} đã quét vào thời gian ${
-          p.datetime
-        } bằng tài khoản ${p.owner}`,
+        time,
+        description: `${hexToAscii(
+          p.userName,
+        )} đã quét vào thời gian [${time}] bằng tài khoản ${p.owner}`,
       };
     });
   }, [prodRouting]);
+
+  const prodInfo = useMemo(() => {
+    return routing[0] || {};
+  }, [routing]);
 
   if (!hashId) return null;
 
@@ -79,7 +82,7 @@ export function ProductDetailPage(xxx) {
               <b>Chủ sở hữu:</b> {prodInfo?.owner}
             </Box>
             <Box>
-              <b>Được vận chuyển ngày:</b> {prodInfo?.datetime}
+              <b>Được vận chuyển vào:</b> {prodInfo?.time}
             </Box>
           </Box>
         ) : (
