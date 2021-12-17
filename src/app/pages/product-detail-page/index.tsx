@@ -20,9 +20,7 @@ export function ProductDetailPage(xxx) {
   const hashId = params.id;
   const { api, apiState } = useSubstrate();
   const [prodRouting, setProdRouting] = useState<ProductInfo[]>([]);
-  const [prodInfo, setProdInfo] = useState<any>({});
   const [prodRoutingLoading, setProdRoutingLoading] = useState(true);
-  const [prodInfoLoading, setProdInfoLoading] = useState(true);
 
   useEffect(() => {
     if (!hashId || apiState !== 'READY') return;
@@ -41,28 +39,14 @@ export function ProductDetailPage(xxx) {
       }
       setProdRoutingLoading(false);
     };
-    const fetchInfo = async () => {
-      setProdInfoLoading(true);
-      try {
-        console.log('xx', api.query);
-        const prodInfo = await api.query[METHODS_RPC.traceAbility.key][
-          METHODS_RPC.traceAbility.methods.logInfos
-        ](hashId);
-        if (!!prodInfo) {
-          setProdInfo(prodInfo.toJSON() as unknown as ProductInfo[]);
-        }
-      } catch (error) {}
-      setProdInfoLoading(false);
-    };
     setTimeout(() => {
-      fetchInfo();
       fetchRouting();
     }, 200);
   }, [hashId, api, apiState]);
 
-  const prodName = useMemo(() => {
-    return hexToAscii(prodRouting?.[0]?.productName || prodInfo?.productName);
-  }, [prodRouting, prodInfo]);
+  const prodInfo = useMemo(() => {
+    return prodRouting[0] || {};
+  }, [prodRouting]);
 
   const routing = useMemo(() => {
     return prodRouting.map(p => {
@@ -89,7 +73,7 @@ export function ProductDetailPage(xxx) {
           <Box marginBottom="20px">
             <Box>
               <b>Sản phẩm:</b>
-              {' ' + prodName}
+              {' ' + hexToAscii(prodInfo?.productName)}
             </Box>
             <Box>
               <b>Chủ sở hữu:</b> {prodInfo?.owner}
@@ -103,7 +87,7 @@ export function ProductDetailPage(xxx) {
         )}
 
         <Box fontWeight="bold">Lộ trình:</Box>
-        {!prodInfoLoading ? (
+        {!prodRoutingLoading ? (
           <Stepper
             activeStep={Math.max(0, routing.length - 1)}
             orientation="vertical"
