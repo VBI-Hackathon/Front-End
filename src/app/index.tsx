@@ -37,10 +37,10 @@ export function App() {
             path={process.env.PUBLIC_URL + '/farmer'}
             element={<FarmerPage />}
           />
-          <Route
+          {/* <Route
             path={process.env.PUBLIC_URL + '/agency'}
             element={<AgencyPage />}
-          />
+          /> */}
           <Route
             path={process.env.PUBLIC_URL + '/register'}
             element={<RegisterPage />}

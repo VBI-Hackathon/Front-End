@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useRef, useState } from 'react';
 import Box from '@mui/material/Box';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
@@ -8,10 +8,15 @@ import PostAddIcon from '@mui/icons-material/PostAdd';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import Paper from '@mui/material/Paper';
 import styled from '@emotion/styled';
+import { useNavigate } from 'react-router-dom';
 
+enum Tab {
+  CREATE_ORDER,
+}
 export function BottomAppBar() {
-  const [value, setValue] = React.useState(0);
-  const ref = React.useRef<HTMLDivElement>(null);
+  const [value, setValue] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   return (
     <Box sx={{ pb: 7 }} ref={ref}>
@@ -32,13 +37,17 @@ export function BottomAppBar() {
           showLabels
           sx={{ background: 'var(--main-color)' }}
           value={value}
-          onChange={(event, newValue) => {
-            setValue(newValue);
+          onChange={(event, tab) => {
+            setValue(tab);
+            if (tab === Tab.CREATE_ORDER) {
+              navigate('/farmer');
+            }
           }}
         >
           <Action
             label="Tạo đơn hàng"
             icon={<PostAddIcon htmlColor="white" />}
+            value={Tab.CREATE_ORDER}
           />
           {/* <Action label="Archive" icon={<ArchiveIcon htmlColor="white" />} /> */}
         </BottomNavigation>
