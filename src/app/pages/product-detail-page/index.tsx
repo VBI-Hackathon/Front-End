@@ -35,6 +35,7 @@ export function ProductDetailPage(xxx) {
           setProdRouting(prodRouting.toJSON() as unknown as ProductInfo[]);
         }
       } catch (error) {
+        alert('Lỗi hệ thống, Vui lòng refresh page');
         console.log({ error });
       }
       setProdRoutingLoading(false);
@@ -48,7 +49,9 @@ export function ProductDetailPage(xxx) {
         if (!!prodInfo) {
           setProdInfo(prodInfo.toJSON() as unknown as ProductInfo[]);
         }
-      } catch (error) {}
+      } catch (error) {
+        alert('Lỗi hệ thống, Vui lòng refresh page');
+      }
       setProdInfoLoading(false);
     };
     fetchInfo();
