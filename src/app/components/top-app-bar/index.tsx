@@ -65,7 +65,7 @@ export const TopAppBar = () => {
             component="div"
             sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
           >
-            LOGO
+            TraceVix
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -97,8 +97,8 @@ export const TopAppBar = () => {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page: IPage) => (
-                <MenuItem key={page.key} onClick={handleCloseNavMenu}>
+              {pages.map((page: IPage, idx) => (
+                <MenuItem key={idx} onClick={handleCloseNavMenu}>
                   <Typography textAlign="center">{page.name}</Typography>
                 </MenuItem>
               ))}
@@ -113,8 +113,8 @@ export const TopAppBar = () => {
             LOGO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page: IPage) => (
-              <Link to={page.path}>
+            {pages.map((page: IPage, idx) => (
+              <Link to={page.path} key={idx}>
                 <Button
                   key={page.key}
                   onClick={handleCloseNavMenu}
@@ -148,8 +148,8 @@ export const TopAppBar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map(setting => (
-                <MenuItem key={setting} onClick={handleCloseNavMenu}>
+              {settings.map((setting, idx) => (
+                <MenuItem key={idx} onClick={handleCloseNavMenu}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}

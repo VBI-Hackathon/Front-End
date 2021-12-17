@@ -12,6 +12,7 @@ import { ProductDetailPage } from './pages/product-detail-page/Loadable';
 import { FarmerPage } from './pages/farmer-page/Loadable';
 import { AgencyPage } from './pages/agency-page/Loadable';
 
+// InfoPage
 export function App() {
   const { i18n } = useTranslation();
   return (
