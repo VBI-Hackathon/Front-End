@@ -1,19 +1,14 @@
 import React, { useEffect } from 'react';
 import { Box, Button } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
-import { settingActions, useSettingSlice } from 'app/stores/setting-store';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectBottomNav } from 'app/stores/setting-store/selectors';
 import { useSubstrate } from 'libs/substrate/substrate.context';
-import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
-import { SubtrateService } from 'libs/utils/service';
 import { useNavigate } from 'react-router-dom';
 
 export function HomePage() {
   const dispath = useDispatch();
-  const isBottomNav = useSelector(selectBottomNav);
-  const { api, keyring, connect, accountSelected, accountInfo } =
-    useSubstrate();
+  const { accountInfo } = useSubstrate();
   const navigate = useNavigate();
 
   return (
@@ -22,7 +17,7 @@ export function HomePage() {
         <title>Truy xuất nguồn gốc thực phẩm</title>
         <meta name="description" content="Truy xuất nguồn gốc thực phẩm" />
       </Helmet>
-      <Box>
+      <Box position="relative">
         <Box mb="10px" p="20px 10px">
           <span>Truy xuất nguồn gốc thực phẩm</span>
           <Box>
@@ -47,29 +42,29 @@ export function HomePage() {
           </Box>
         </Box>
         {!accountInfo && (
-          <Box mb="10px" display="flex" justifyContent="center">
-            <Button
-              variant="outlined"
-              onClick={async () => {
-                navigate('/register');
-              }}
-            >
-              Đăng kí tài khoản
-            </Button>
+          <Box
+            position="absolute"
+            display="flex"
+            bgcolor="#0000008d"
+            top={0}
+            left={0}
+            width={1}
+            height={1}
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Box>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  navigate('/register');
+                }}
+              >
+                Đăng kí tài khoản
+              </Button>
+            </Box>
           </Box>
         )}
-        {/* {!isBottomNav && (
-          <Box mt="20px" display="flex" justifyContent="center">
-            <Button
-              variant="outlined"
-              onClick={() => {
-                dispath(settingActions.displayButtonNav());
-              }}
-            >
-              Login
-            </Button>
-          </Box>
-        )} */}
       </Box>
     </>
   );
