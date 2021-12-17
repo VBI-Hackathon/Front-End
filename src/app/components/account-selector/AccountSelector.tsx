@@ -91,7 +91,11 @@ export function AccountSelector() {
         }}
       >
         {keyringOptions.map((account, idx) => (
-          <MenuItem key={idx} onClick={() => handleCloseUserMenu(account)}>
+          <MenuItem
+            key={idx}
+            selected={account === accountSelected}
+            onClick={() => handleCloseUserMenu(account)}
+          >
             <Typography textAlign="center">{account.label}</Typography>
           </MenuItem>
         ))}

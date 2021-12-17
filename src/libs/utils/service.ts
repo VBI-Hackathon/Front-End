@@ -7,7 +7,7 @@ export const SubtrateService = (api: ApiPromise, account?: KeyringPair) => {
     getMyInfo: () => api.query[palletRpc]['userInfos'](account?.address),
     logInfosOwned: (hashId: string) =>
       api.query[palletRpc]['logInfosOwned'](hashId),
-    registerUser: (username, address) =>
+    registerUser: (username: string, address: string) =>
       api.tx[palletRpc]['registerUser'](username, address).signAndSend(
         account!,
       ),

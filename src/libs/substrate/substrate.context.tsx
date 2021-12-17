@@ -21,6 +21,7 @@ const INIT_STATE = {
   apiState: null,
   accountSelected: '',
   accountInfo: null,
+  refreshInfo: null,
 } as unknown as SubstrateState;
 
 const SubstrateContext = React.createContext<SubstrateState>(INIT_STATE);
@@ -77,29 +78,32 @@ export const SubstrateContextProvider = props => {
   };
 
   connect();
-  Object.assign(state, { dispatch, connect });
+
+  const fetchInfo = async () => {
+    console.log('call::', 'fetchInfo');
+    setLoading(true);
+    try {
+      const svc = SubtrateService(state.api, state.accountSelected);
+      const info = await svc.getMyInfo();
+      dispatch({
+        type: SubstrateAction.SET_ACCOUNT_INFO,
+        payload: info.toJSON(),
+      });
+    } catch (error) {
+      dispatch({
+        type: SubstrateAction.SET_ACCOUNT_INFO,
+        payload: null,
+      });
+    }
+    setLoading(false);
+  };
+
+  Object.assign(state, { dispatch, connect, refreshInfo: fetchInfo });
 
   useEffect(() => {
     if (!state.accountSelected || !state.api || state.apiState !== 'READY')
       return;
 
-    const fetchInfo = async () => {
-      setLoading(true);
-      try {
-        const svc = SubtrateService(state.api, state.accountSelected);
-        const info = await svc.getMyInfo();
-        dispatch({
-          type: SubstrateAction.SET_ACCOUNT_INFO,
-          payload: info.toJSON(),
-        });
-      } catch (error) {
-        dispatch({
-          type: SubstrateAction.SET_ACCOUNT_INFO,
-          payload: null,
-        });
-      }
-      setLoading(false);
-    };
     fetchInfo();
   }, [state.accountSelected, state.api, state.apiState]);
 

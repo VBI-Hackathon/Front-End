@@ -1,84 +1,87 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Box, FormControl, TextField, Button, Input } from '@mui/material';
+import * as Yup from 'yup';
+import { useFormik } from 'formik';
+import { useSubstrate } from 'libs/substrate/substrate.context';
+import { SubtrateService } from 'libs/utils/service';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
-const IInput: any = Input;
-
+const registerSchema = Yup.object().shape({
+  username: Yup.string().required('Required'),
+  address: Yup.string().required('Required'),
+});
 export function RegisterPage() {
-  const [famerName, setFarmerName] = useState('');
-  const [productName, setProductName] = useState('');
-  const [note, setNote] = useState('');
-  const [quantity, setQuantity] = useState('');
+  const { refreshInfo, api, accountSelected } = useSubstrate();
+  const navigate = useNavigate();
+  const formik = useFormik({
+    initialValues: {
+      username: '',
+      address: '',
+    },
+    validationSchema: registerSchema,
+    onSubmit: values => {
+      const svc = SubtrateService(api, accountSelected);
 
-  const onChangeFamerName = text => setFarmerName(text.target.value);
-  const onChangeProductName = text => setProductName(text.target.value);
-  const onChangeNote = text => setNote(text.target.value);
-  const onChangeQuantity = text => setQuantity(text.target.value);
+      svc.registerUser(values.username, values.address).then(res => {
+        toast.success('Đăng kí thành công', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'colored',
+          onClose: () => {
+            // refreshInfo();
+            // navigate('/');
+          },
+        });
+      });
+
+      setTimeout(() => {
+        refreshInfo();
+        navigate('/');
+      }, 1000);
+    },
+  });
+
   return (
-    <Box sx={{ p: 1 }}>
+    <Box sx={{ p: '20px' }}>
       <Helmet>
         <title>Farmer</title>
         <meta name="description" content="Truy xuất nguồn gốc thực phẩm" />
       </Helmet>
-
-      <FormControl fullWidth sx={{ mt: 2 }} variant="standard">
+      <FormControl fullWidth sx={{ mt: '40px' }} variant="standard">
         <TextField
-          label="Farmer name"
-          id="outlined-size-small"
-          value={famerName}
-          onChange={onChangeFamerName}
+          label="Tài khoản"
+          name="username"
+          value={formik.values.username}
+          error={!!formik.errors.username}
+          onChange={formik.handleChange}
           size="small"
         />
       </FormControl>
       <FormControl fullWidth sx={{ mt: 2 }} variant="standard">
         <TextField
-          label="Product name"
-          id="outlined-size-small"
-          defaultValue={productName}
-          onChange={onChangeProductName}
+          label="Địa chỉ"
+          name="address"
+          value={formik.values.address}
+          error={!!formik.errors.address}
+          onChange={formik.handleChange}
           size="small"
         />
       </FormControl>
-      <FormControl fullWidth sx={{ mt: 2 }} variant="standard">
-        <TextField
-          label="Note"
-          id="outlined-size-small"
-          defaultValue={note}
-          onChange={onChangeNote}
-          size="small"
-        />
-      </FormControl>
-      <FormControl fullWidth sx={{ mt: 2 }} variant="standard">
-        <TextField
-          label="Quantity"
-          id="outlined-size-small"
-          defaultValue={quantity}
-          onChange={onChangeQuantity}
-          size="small"
-          type="number"
-        />
-      </FormControl>
-      <Box mt="20px" display="flex" justifyContent="center">
-        <label htmlFor="contained-button-file">
-          <IInput
-            accept="image/*"
-            id="contained-button-file"
-            multiple
-            type="file"
-          />
-          <Button variant="contained" component="span">
-            Upload
-          </Button>
-        </label>
-      </Box>
-      <Box mt="80px" display="flex" justifyContent="center">
+      <Box mt="40px" display="flex" justifyContent="center">
         <Button
           variant="outlined"
           onClick={() => {
-            console.log('Create batch no!');
+            formik.handleSubmit();
           }}
         >
-          Create batch no
+          Tạo tài khoản
         </Button>
       </Box>
     </Box>

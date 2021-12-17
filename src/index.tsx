@@ -27,6 +27,8 @@ import reportWebVitals from 'reportWebVitals';
 
 // Initialize languages
 import './locales/i18n';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 import { ThemeProvider } from '@emotion/react';
 import { SubstrateContextProvider } from 'libs/substrate/substrate.context';
 
@@ -54,6 +56,7 @@ ReactDOM.render(
           </ThemeProvider>
         </React.StrictMode>
       </HelmetProvider>
+      <ToastContainer />
     </SubstrateContextProvider>
   </Provider>,
   MOUNT_NODE,

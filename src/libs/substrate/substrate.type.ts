@@ -26,9 +26,10 @@ export interface SubstrateState {
   apiError: any;
   apiState: string;
   accountSelected: KeyringPair;
+  accountInfo: IAccountInfo;
   dispatch: Dispatch<SubstrateActions>;
   connect: () => void;
-  accountInfo: IAccountInfo;
+  refreshInfo: () => void;
 }
 
 export interface SubstrateActions {
