@@ -27,7 +27,7 @@ export function RegisterPage() {
       svc.registerUser(values.username, values.address).then(res => {
         toast.success('Đăng kí thành công', {
           position: 'top-right',
-          autoClose: 5000,
+          autoClose: 4000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
@@ -35,16 +35,18 @@ export function RegisterPage() {
           progress: undefined,
           theme: 'colored',
           onClose: () => {
-            // refreshInfo();
-            // navigate('/');
+            refreshInfo();
+            navigate('/');
           },
         });
       });
 
-      setTimeout(() => {
-        refreshInfo();
-        navigate('/');
-      }, 1000);
+      // setTimeout(() => {
+      //   setTimeout(() => {
+      //     refreshInfo();
+      //   }, 500);
+      //   navigate('/');
+      // }, 2000);
     },
   });
 
