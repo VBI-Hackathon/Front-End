@@ -38,25 +38,27 @@ export function FarmerPage() {
       svc
         .createAbility(values.name, values.quantity, values.note)
         .then(async _ => {
-          const hashID = await svc.getHashId();
-          console.log(hashID.toString());
-          console.log('create abit');
-          //setHash(hash.toString());
-          setHash(hashID.toString());
-          toast.success('Tạo sản phẩm thành công', {
-            position: 'top-right',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: 'colored',
-            onClose: () => {
-              // refreshInfo();
-              // navigate('/');
-            },
-          });
+          setTimeout(async () => {
+            const hashID = await svc.getHashId();
+            console.log(hashID.toString());
+            console.log('create abit');
+            //setHash(hash.toString());
+            setHash(hashID.toString());
+            toast.success('Tạo sản phẩm thành công', {
+              position: 'top-right',
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: 'colored',
+              onClose: () => {
+                // refreshInfo();
+                // navigate('/');
+              },
+            });
+          }, 2000);
         });
 
       // setTimeout(() => {
