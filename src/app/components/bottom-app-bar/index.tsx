@@ -45,7 +45,7 @@ export function BottomAppBar() {
           }}
         >
           <Action
-            label="Tạo đơn hàng"
+            label="Tạo lô hàng"
             icon={<PostAddIcon htmlColor="white" />}
             value={Tab.CREATE_ORDER}
           />

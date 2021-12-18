@@ -15,13 +15,48 @@ import { SubtrateService } from 'libs/utils/service';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
+import { AccountRegisterBtn } from 'app/components/account-register';
 
-export function ProductDetailPage(xxx) {
+export function ProductDetailPage() {
   const params = useParams();
-  const hashId = params.id;
-  const { api, apiState } = useSubstrate();
+  const hashId = params.id as string;
+  const { api, apiState, accountSelected, accountInfo } = useSubstrate();
   const [prodRouting, setProdRouting] = useState<ProductInfo[]>([]);
   const [prodRoutingLoading, setProdRoutingLoading] = useState(true);
+  const [blockLoading, setBlockLoading] = useState(false);
+
+  const routing = useMemo(() => {
+    return prodRouting.map(p => {
+      const time = dayjs(p.datetime * 1000).format('HH:mm:ss DD/MM/YYYY');
+      return {
+        ...p,
+        label: `địa điểm ${hexToAscii(p.address)}`,
+        time,
+        description: `${hexToAscii(
+          p.userName,
+        )} đã quét vào thời gian [${time}] bằng tài khoản ${p.owner}`,
+      };
+    });
+  }, [prodRouting]);
+
+  const isChecked = useMemo(() => {
+    return prodRouting.some(r => r.owner === accountSelected.address);
+  }, [prodRouting, accountSelected]);
+
+  const prodInfo = useMemo(() => {
+    return routing[0] || {};
+  }, [routing]);
+
+  const updateRouting = async () => {
+    setBlockLoading(true);
+    const svc = SubtrateService(api, accountSelected);
+    svc.updateAbility(hashId).finally(() => {
+      setInterval(() => {
+        setBlockLoading(false);
+        window.location.reload();
+      }, 7000);
+    });
+  };
 
   useEffect(() => {
     if (!hashId || apiState !== 'READY') return;
@@ -30,7 +65,6 @@ export function ProductDetailPage(xxx) {
       try {
         const svc = SubtrateService(api);
         const prodRouting = await svc.logInfosOwned(hashId);
-        console.log({ prodRouting });
         if (!!prodRouting) {
           setProdRouting(prodRouting.toJSON() as unknown as ProductInfo[]);
         }
@@ -45,25 +79,6 @@ export function ProductDetailPage(xxx) {
     }, 200);
   }, [hashId, api, apiState]);
 
-  const routing = useMemo(() => {
-    return prodRouting.map(p => {
-      console.log('Product:', p);
-      const time = dayjs(p.datetime * 1000).format('HH:mm:ss DD/MM/YYYY');
-      return {
-        ...p,
-        label: `địa điểm ${hexToAscii(p.address)}`,
-        time,
-        description: `${hexToAscii(
-          p.userName,
-        )} đã quét vào thời gian [${time}] bằng tài khoản ${p.owner}`,
-      };
-    });
-  }, [prodRouting]);
-
-  const prodInfo = useMemo(() => {
-    return routing[0] || {};
-  }, [routing]);
-
   if (!hashId) return null;
 
   return (
@@ -72,6 +87,30 @@ export function ProductDetailPage(xxx) {
         <title>Truy xuất nguồn gốc thực phẩm</title>
         <meta name="description" content="Truy xuất nguồn gốc thực phẩm" />
       </Helmet>
+      {!isChecked && !!accountInfo && (
+        <>
+          <Box py="10px" display="flex" justifyContent="center">
+            {!!blockLoading &&
+              'Vui lòng chờ, đang xử cập nhập thông tin lô hàng ...'}
+            {!blockLoading && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  updateRouting();
+                  // formik.handleSubmit();
+                }}
+              >
+                Đã nhận lô hàng
+              </Button>
+            )}
+          </Box>
+          <hr />
+        </>
+      )}
+
+      <AccountRegisterBtn />
+
       <Box paddingX="20px" paddingTop="20px">
         {!prodRoutingLoading ? (
           <Box marginBottom="20px">
