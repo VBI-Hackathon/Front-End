@@ -15,6 +15,8 @@ const registerSchema = Yup.object().shape({
 export function RegisterPage() {
   const { refreshInfo, api, accountSelected } = useSubstrate();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
   const formik = useFormik({
     initialValues: {
       username: '',
@@ -22,23 +24,26 @@ export function RegisterPage() {
     },
     validationSchema: registerSchema,
     onSubmit: values => {
+      setLoading(true);
       const svc = SubtrateService(api, accountSelected);
 
       svc.registerUser(values.username, values.address).then(res => {
-        toast.success('Đăng kí thành công', {
-          position: 'top-right',
-          autoClose: 4000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: 'colored',
-          onClose: () => {
-            refreshInfo();
-            navigate('/');
-          },
-        });
+        setTimeout(() => {
+          setLoading(false);
+          refreshInfo();
+          navigate('/');
+          toast.success('Đăng kí thành công', {
+            position: 'top-right',
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'colored',
+            onClose: () => {},
+          });
+        }, 6000);
       });
 
       // setTimeout(() => {
@@ -56,36 +61,42 @@ export function RegisterPage() {
         <title>Farmer</title>
         <meta name="description" content="Truy xuất nguồn gốc thực phẩm" />
       </Helmet>
-      <FormControl fullWidth sx={{ mt: '40px' }} variant="standard">
-        <TextField
-          label="Tài khoản"
-          name="username"
-          value={formik.values.username}
-          error={!!formik.errors.username}
-          onChange={formik.handleChange}
-          size="small"
-        />
-      </FormControl>
-      <FormControl fullWidth sx={{ mt: 2 }} variant="standard">
-        <TextField
-          label="Địa chỉ"
-          name="address"
-          value={formik.values.address}
-          error={!!formik.errors.address}
-          onChange={formik.handleChange}
-          size="small"
-        />
-      </FormControl>
-      <Box mt="40px" display="flex" justifyContent="center">
-        <Button
-          variant="outlined"
-          onClick={() => {
-            formik.handleSubmit();
-          }}
-        >
-          Tạo tài khoản
-        </Button>
-      </Box>
+      {!loading && (
+        <>
+          <FormControl fullWidth sx={{ mt: '40px' }} variant="standard">
+            <TextField
+              label="Tài khoản"
+              name="username"
+              value={formik.values.username}
+              error={!!formik.errors.username}
+              onChange={formik.handleChange}
+              size="small"
+            />
+          </FormControl>
+          <FormControl fullWidth sx={{ mt: 2 }} variant="standard">
+            <TextField
+              label="Địa chỉ"
+              name="address"
+              value={formik.values.address}
+              error={!!formik.errors.address}
+              onChange={formik.handleChange}
+              size="small"
+            />
+          </FormControl>
+          <Box mt="40px" display="flex" justifyContent="center">
+            <Button
+              disabled={loading}
+              variant="outlined"
+              onClick={() => {
+                formik.handleSubmit();
+              }}
+            >
+              Tạo tài khoản
+            </Button>
+          </Box>
+        </>
+      )}
+      {!!loading && <Box>Đang xử lý tài khoản, vui lòng chờ...</Box>}
     </Box>
   );
 }
