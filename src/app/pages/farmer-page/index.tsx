@@ -35,26 +35,29 @@ export function FarmerPage() {
     onSubmit: values => {
       const svc = SubtrateService(api, accountSelected);
 
-      svc
-        .createAbility(values.name, values.quantity, values.note)
-        .then(hash => {
-          console.log('create abit');
-          setHash(hash.toString());
-          toast.success('Tạo sản phẩm thành công', {
-            position: 'top-right',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: 'colored',
-            onClose: () => {
-              // refreshInfo();
-              // navigate('/');
-            },
+      svc.createAbility(values.name, values.quantity, values.note)
+        .then(
+          async _ => {
+            const hashID = await svc.getHashId();
+            console.log(hashID.toString());
+            console.log('create abit');
+            //setHash(hash.toString());
+            setHash(hashID.toString());
+            toast.success('Tạo sản phẩm thành công', {
+              position: 'top-right',
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: 'colored',
+              onClose: () => {
+                // refreshInfo();
+                // navigate('/');
+              },
+            });
           });
-        });
 
       // setTimeout(() => {
       //   refreshInfo();
@@ -123,7 +126,7 @@ export function FarmerPage() {
         >
           <QRCode value={orderingLink} />
           <Box mt="20px">
-            <Link to={hash}> Xem đơn hàng</Link>
+            <Link to={`/product/${hash}`}> Xem đơn hàng</Link>
           </Box>
         </Box>
       )}

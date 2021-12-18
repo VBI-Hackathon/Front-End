@@ -47,6 +47,7 @@ export function ProductDetailPage(xxx) {
 
   const routing = useMemo(() => {
     return prodRouting.map(p => {
+      console.log('Product:', p);
       const time = dayjs(p.datetime * 1000).format('HH:mm:ss DD/MM/YYYY');
       return {
         ...p,

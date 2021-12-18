@@ -105,6 +105,7 @@ export const SubstrateContextProvider = props => {
       return;
 
     fetchInfo();
+    // eslint-disable-next-line
   }, [state.accountSelected, state.api, state.apiState]);
 
   return (

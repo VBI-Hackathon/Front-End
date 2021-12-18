@@ -16,6 +16,8 @@ export const SubtrateService = (api: ApiPromise, account?: KeyringPair) => {
         account!,
       ),
     updateAbility: (hashId: string) =>
-      api.tx[palletRpc]['createAbility'](hashId).signAndSend(account!),
+      api.tx[palletRpc]['updateAbility'](hashId).signAndSend(account!),
+
+    getHashId: () => api.query[palletRpc]['hashIDs'](account?.address),
   };
 };
